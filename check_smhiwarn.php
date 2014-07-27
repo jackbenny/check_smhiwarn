@@ -158,13 +158,13 @@ switch ($warnLevel)
         print "No warnings issued $district";
         exit($ok);
     case 1:
-        print "Class 1 warning for $district issued, $warnMsg";
+        print "Class 1 warning issued for $district: $warnMsg";
         exit($warning);
     case 2:
-        print "Class 2 warning for $district, $warnMsg";
+        print "Class 2 warning issued for $district: $warnMsg";
         exit($critical);
     case 3:
-        print "Class 3 warning for $district, $warnMsg";
+        print "Class 3 warning issued for $district: $warnMsg";
         exit($critical);
     default:
         print "Unknown error for $district";
