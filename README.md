@@ -17,5 +17,7 @@ Don't forget to quote the district in the argument, such as the below example.
 Create one instance of each district you want to monitor.
 
 ## Copyright ##
+Original author is Jack-Benny Persson (jack-benny@cyberinfo.se).
+
 This script is release under GNU GPL version 2. The script should not be used to
 protect life and/or property.
