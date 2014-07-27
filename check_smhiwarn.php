@@ -124,7 +124,7 @@ if (!preg_grep("/^$district$/", $availDistricts))
 
 
 // Retrive the data
-//$data = file_get_contents("smhi_alla_varningar.xml"); //For testing purposes
+//$data = file_get_contents("testing/smhi_alla_varningar.xml"); //For testing purposes
 $data = shell_exec("curl -s http://www.smhi.se/weatherSMHI2/varningar/smhi_alla_varningar.xml");
 
 // Regex the area (1st paranthesis is area, 2nd is warning class, 3rd is warning msg)
