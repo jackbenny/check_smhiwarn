@@ -1,5 +1,24 @@
 #!/usr/bin/php
 <?php
+
+/*
+    Copyright (C) 2014 Jack-Benny Persson <jack-benny@cyberinfo.se>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 // Define exit status
 $ok = 0;
 $warning = 1;
@@ -9,7 +28,7 @@ $unknown = 3;
 $version = 0.1;
 $program = $argv[0];
 
-//Function for printing usage
+// Function for printing usage
 function usage()
 {
     print "check_smhiwarn version $GLOBALS[version]\n";
@@ -18,7 +37,7 @@ function usage()
     print "Example: $GLOBALS[program] 'Skåne län utom Österlen'\n";
 }
 
-//All of the avaliable districts
+// All of the avaliable districts
 $availDistricts = array(
 "Skagerack",
 "Vänern",
@@ -77,17 +96,17 @@ $availDistricts = array(
 "Norrbottens län inland",
 );
 
-//Check if first argument is set
+// Check if first argument is set
 if (!isset($argv[1]))
 {
     usage();
     exit($unknown);
 }
 
-//Set first argument to $district
+// Set first argument to $district
 $district = $argv[1];
 
-//Simple way of listing all the avaliable districts
+// Simple way of listing all the avaliable districts
 if ($district == 'list')
 {
     foreach ($availDistricts as $dist)
@@ -95,7 +114,7 @@ if ($district == 'list')
     exit($unknown);
 }
 
-//Check if the district exists
+// Check if the district exists
 if (!preg_grep("/^$district$/", $availDistricts))
 {
     print "$district does not exists\n";
@@ -108,11 +127,11 @@ if (!preg_grep("/^$district$/", $availDistricts))
 //$data = file_get_contents("smhi_alla_varningar.xml"); //For testing purposes
 $data = shell_exec("curl -s http://www.smhi.se/weatherSMHI2/varningar/smhi_alla_varningar.xml");
 
-//Regex the area (1st parathentis is area, 2nd is warning class, 3rd is warning msg)
+// Regex the area (1st paranthesis is area, 2nd is warning class, 3rd is warning msg)
 preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-a-z0-9åäö.,&\s]*)/i", 
 $data, $matches);
 
-//Count how many warnings are issued and issue a critical if more than one
+// Count how many warnings are issued and issue a critical if more than one
 preg_match_all("/$district/", $data, $counts);
 $numberMatches = (count($counts[0]));
 if ($numberMatches > 1)
@@ -121,7 +140,7 @@ if ($numberMatches > 1)
     exit($critical);
 }
 
-//Define the paranthesis
+// Define the paranthesis
 if (isset($matches[2]))
 {
     $warnLevel = $matches[2];
@@ -132,7 +151,7 @@ else
     $warnLevel = 0;
 }
 
-//Check for warnings...
+// Check for warnings and exit with correct exit status
 switch ($warnLevel)
 {
     case 0:
