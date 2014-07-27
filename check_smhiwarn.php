@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 // Define exit status
 $ok = 0;
@@ -104,11 +105,21 @@ if (!preg_grep("/^$district$/", $availDistricts))
 
 
 // Retrive the data
-$data = file_get_contents("smhi_alla_varningar.xml");
+//$data = file_get_contents("smhi_alla_varningar.xml"); //For testing purposes
+$data = shell_exec("curl -s http://www.smhi.se/weatherSMHI2/varningar/smhi_alla_varningar.xml");
 
 //Regex the area (1st parathentis is area, 2nd is warning class, 3rd is warning msg)
 preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-a-z0-9åäö.,&\s]*)/i", 
 $data, $matches);
+
+//Count how many warnings are issued and issue a critical if more than one
+preg_match_all("/$district/", $data, $counts);
+$numberMatches = (count($counts[0]));
+if ($numberMatches > 1)
+{
+    print "More than one warning are issued for $district, check smhi.se!";
+    exit($critical);
+}
 
 //Define the paranthesis
 if (isset($matches[2]))
