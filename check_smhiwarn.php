@@ -20,21 +20,22 @@
 */
 
 // Define exit status
-$ok = 0;
-$warning = 1;
-$critical = 2;
-$unknown = 3;
+define ("OK", 0);
+define ("WARNING", 1);
+define ("CRITICAL", 2);
+define ("UNKNOWN", 3);
 
-$version = 0.1;
-$program = $argv[0];
+// Define version and program
+define ("VERSION", 0.2);
+define ("PROGRAM", $argv[0]);
 
 // Function for printing usage
 function usage()
 {
-    print "check_smhiwarn version $GLOBALS[version]\n";
+    print "check_smhiwarn version " . VERSION . "\n";
     print "Copyright (C) Jack-Benny Persson <jack-benny@cyberinfo.se>\n";
-    print "Usage: $GLOBALS[program] 'District'\n";
-    print "Example: $GLOBALS[program] 'Skåne län utom Österlen'\n";
+    print "Usage: " . PROGRAM .  " 'District'\n";
+    print "Example: " . PROGRAM .  " 'Skåne län utom Österlen'\n";
 }
 
 // All of the avaliable districts
@@ -100,7 +101,7 @@ $availDistricts = array(
 if (!isset($argv[1]))
 {
     usage();
-    exit($unknown);
+    exit(UNKNOWN);
 }
 
 // Set first argument to $district
@@ -111,7 +112,7 @@ if ($district == 'list')
 {
     foreach ($availDistricts as $dist)
     print "$dist\n";
-    exit($unknown);
+    exit(UNKNOWN);
 }
 
 // Check if the district exists
@@ -119,13 +120,17 @@ if (!preg_grep("/^$district$/", $availDistricts))
 {
     print "$district does not exists\n";
     print "List all avaliable districts by \"$program 'list'\"\n";
-    exit($unknown);
+    exit(UNKNOWN);
 }
 
 
 // Retrive the data
 //$data = file_get_contents("testing/smhi_alla_varningar.xml"); //For testing purposes
-$data = shell_exec("curl -s http://www.smhi.se/weatherSMHI2/varningar/smhi_alla_varningar.xml");
+$ch = curl_init("http://www.smhi.se/weatherSMHI2/varningar/smhi_alla_varningar.xml");
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$data = curl_exec($ch);
+curl_close($ch);
 
 // Regex the area (1st paranthesis is area, 2nd is warning class, 3rd is warning msg)
 preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-a-z0-9åäö.,&\s]*)/i", 
@@ -137,7 +142,7 @@ $numberMatches = (count($counts[0]));
 if ($numberMatches > 1)
 {
     print "More than one warning are issued for $district, check smhi.se!";
-    exit($critical);
+    exit(CRITICAL);
 }
 
 // Define the paranthesis
@@ -156,19 +161,19 @@ switch ($warnLevel)
 {
     case 0:
         print "No warnings issued $district";
-        exit($ok);
+        exit(OK);
     case 1:
         print "Class 1 warning issued for $district: $warnMsg";
-        exit($warning);
+        exit(WARNING);
     case 2:
         print "Class 2 warning issued for $district: $warnMsg";
-        exit($critical);
+        exit(CRITICAL);
     case 3:
         print "Class 3 warning issued for $district: $warnMsg";
-        exit($critical);
+        exit(CRITICAL);
     default:
         print "Unknown error for $district";
-        exit($unknown);
+        exit(UNKNOWN);
 }
 
 ?>

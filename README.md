@@ -16,6 +16,9 @@ Don't forget to quote the district in the argument, such as the below example.
 
 Create one instance of each district you want to monitor.
 
+## Requirements ##
+The script requires PHP5 and the PHP5 cURL module (php5-curl on Debian systems).
+
 ## Copyright ##
 Original author is Jack-Benny Persson (jack-benny@cyberinfo.se).
 
