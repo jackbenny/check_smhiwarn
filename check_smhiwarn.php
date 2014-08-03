@@ -133,7 +133,7 @@ $data = curl_exec($ch);
 curl_close($ch);
 
 // Regex the area (1st paranthesis is area, 2nd is warning class, 3rd is warning msg)
-preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-a-z0-9åäö.,&\s]*)/i", 
+preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-a-z0-9åäö.,&\s]*)/iu", 
 $data, $matches);
 
 // Count how many warnings are issued and issue a critical if more than one

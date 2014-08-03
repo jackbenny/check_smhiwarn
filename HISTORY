@@ -1,3 +1,6 @@
+0.3 - 2014-08-03
+    Added /u modifier to the preg_match for UTF-8
+
 0.2 - 2014-07-31
     Replaced 'shell_exec("curl -s URL")' with PHP cURL function
     Replaced all state-variables with constants
