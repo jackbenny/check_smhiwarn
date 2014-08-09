@@ -26,7 +26,7 @@ define ("CRITICAL", 2);
 define ("UNKNOWN", 3);
 
 // Define version and program
-define ("VERSION", 0.2);
+define ("VERSION", 0.4);
 define ("PROGRAM", $argv[0]);
 
 // Function for printing usage
@@ -116,10 +116,10 @@ if ($district == 'list')
 }
 
 // Check if the district exists
-if (!preg_grep("/^$district$/", $availDistricts))
+if (!preg_grep("/^$district$/u", $availDistricts))
 {
     print "$district does not exists\n";
-    print "List all avaliable districts by \"$program 'list'\"\n";
+    print "List all avaliable districts by \"" . PROGRAM . " 'list'\"\n";
     exit(UNKNOWN);
 }
 
@@ -133,15 +133,15 @@ $data = curl_exec($ch);
 curl_close($ch);
 
 // Regex the area (1st paranthesis is area, 2nd is warning class, 3rd is warning msg)
-preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-a-z0-9åäö.,&\s]*)/iu", 
+preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-0-9\p{L}.,&\s]*)/iu", 
 $data, $matches);
 
 // Count how many warnings are issued and issue a critical if more than one
-preg_match_all("/$district/", $data, $counts);
+preg_match_all("/$district/u", $data, $counts);
 $numberMatches = (count($counts[0]));
 if ($numberMatches > 1)
 {
-    print "More than one warning are issued for $district, check smhi.se!";
+    print "More than one warning is issued for $district, check smhi.se!";
     exit(CRITICAL);
 }
 
@@ -160,7 +160,7 @@ else
 switch ($warnLevel)
 {
     case 0:
-        print "No warnings issued $district";
+        print "No warnings issued for $district";
         exit(OK);
     case 1:
         print "Class 1 warning issued for $district: $warnMsg";

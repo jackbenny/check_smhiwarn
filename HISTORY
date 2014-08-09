@@ -1,3 +1,9 @@
+0.4 - 2014-08-09
+    Added /u modifier to more preg_matches for UTF-8
+    Replaced a-zåäö with \p{L}
+    Fixed a couple of spelling errors and missing words
+    Replaced $program with PROGRAM on line 122
+
 0.3 - 2014-08-03
     Added /u modifier to the preg_match for UTF-8
 
