@@ -26,7 +26,7 @@ define ("CRITICAL", 2);
 define ("UNKNOWN", 3);
 
 // Define version and program
-define ("VERSION", 0.4);
+define ("VERSION", 0.5);
 define ("PROGRAM", $argv[0]);
 
 // Function for printing usage
@@ -129,8 +129,17 @@ if (!preg_grep("/^$district$/u", $availDistricts))
 $ch = curl_init("http://www.smhi.se/weatherSMHI2/varningar/smhi_alla_varningar.xml");
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$data = curl_exec($ch);
+curl_setopt($ch, CURLOPT_FAILONERROR, true);
+// check if curl failed and bail out if it did
+if (($data = curl_exec($ch)) === false)
+{
+    print curl_error($ch);
+    curl_close($ch);
+    exit(UNKNOWN);
+}
 curl_close($ch);
+
+//print "\n$data\n"; // for testing purposes (uncomment to view xml-file)
 
 // Regex the area (1st paranthesis is area, 2nd is warning class, 3rd is warning msg)
 preg_match("/($district)(?:: )(?:Varning klass )([1-3]+)(?:,\s)([-0-9\p{L}.,&\s]*)/iu", 

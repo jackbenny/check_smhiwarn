@@ -1,3 +1,8 @@
+0.5 - 2014-08-15
+    Added a check to see if cURL was successful in
+    retrieving the XML-file. If it was not, then exit
+    with a UNKNOWN state and print the cURL error message.
+
 0.4 - 2014-08-09
     Added /u modifier to more preg_matches for UTF-8
     Replaced a-zåäö with \p{L}
